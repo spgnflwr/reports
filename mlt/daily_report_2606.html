@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마이리틀타이거 6월 캠페인 데일리 리포트 — 6/11 기준</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:#f5f4f0;color:#1a1a18;font-size:14px;line-height:1.5;}
+.wrap{max-width:980px;margin:0 auto;padding:28px 20px 60px;}
+
+/* HEADER */
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #1a1a18;}
+.hdr-l .sub{font-size:11px;font-weight:600;color:#888;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+.hdr-l .title{font-size:22px;font-weight:700;letter-spacing:-.4px;}
+.hdr-r{text-align:right;font-size:12px;}
+.hdr-r .date{font-weight:700;margin-bottom:2px;font-size:13px;}
+.hdr-r .meta{color:#888;}
+.brand-pills{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.04em;}
+.pill-t{background:#dce8f8;color:#1b4f9c;}
+.pill-s{background:#fde8d4;color:#c25d1a;}
+.pill-w{background:#d6f0e4;color:#1a7a48;}
+.pill-done{background:#e8e7e2;color:#666;}
+
+/* ALERT */
+.alert{background:#fffbf0;border:1px solid #f0c040;border-radius:12px;padding:16px 18px;margin-bottom:24px;}
+.alert-title{font-size:11px;font-weight:700;color:#854F0B;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;}
+.alert-item{font-size:12px;color:#333;margin-bottom:8px;padding-left:18px;position:relative;line-height:1.7;}
+.alert-item::before{content:'•';position:absolute;left:2px;color:#d4900a;font-weight:700;}
+.alert-item:last-child{margin-bottom:0;}
+.alert-item strong{color:#a36500;}
+.alert-item .tag-off{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:#fce8e8;color:#a32d2d;margin-left:4px;}
+.alert-item .tag-ok{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:#d6f0e4;color:#1a7a48;margin-left:4px;}
+.alert-item .tag-warn{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:#fff0d0;color:#a36500;margin-left:4px;}
+
+/* SECTION */
+.sec{margin-bottom:32px;}
+.sec-label{font-size:11px;font-weight:700;color:#888;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #e0dfd8;}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.kpi-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.kpi{background:#fff;border:1px solid #e5e4e0;border-radius:10px;padding:14px 16px;}
+.kpi-lbl{font-size:11px;color:#888;margin-bottom:4px;}
+.kpi-val{font-size:20px;font-weight:700;line-height:1.2;color:#1a1a18;}
+.kpi-val.red{color:#a32d2d;}
+.kpi-val.grn{color:#1a7a48;}
+.kpi-val.sm{font-size:16px;}
+.diff{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;margin-top:5px;padding:2px 8px;border-radius:20px;}
+.up{background:#e0f0e8;color:#1a6640;}
+.dn{background:#fce8e8;color:#a32d2d;}
+.flat{background:#f0efe8;color:#888;}
+.kpi-prev{font-size:11px;color:#bbb;margin-top:3px;}
+
+/* CAMPAIGN CARDS */
+.camp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:8px;}
+.bcard{background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:16px;position:relative;}
+.bcard-t{border-top:3px solid #1b4f9c;}
+.bcard-s{border-top:3px solid #c25d1a;}
+.bcard-w{border-top:3px solid #1a7a48;}
+.bcard-done{border-top:3px solid #bbb;opacity:.85;}
+.bcard-name{font-size:12px;font-weight:700;margin-bottom:3px;}
+.bcard-name.t{color:#1b4f9c;}
+.bcard-name.s{color:#c25d1a;}
+.bcard-name.w{color:#1a7a48;}
+.bcard-name.done{color:#888;}
+.bcard-period{font-size:11px;color:#999;margin-bottom:12px;}
+.brow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-top:1px solid #f0efe8;font-size:12px;}
+.bl{color:#888;}
+.bv{font-weight:600;color:#1a1a18;}
+.bv.g{color:#1a7a48;}
+.bv.r{color:#a32d2d;}
+.bv.o{color:#c25d1a;}
+.status-badge{position:absolute;top:12px;right:12px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.sb-done{background:#e8e7e2;color:#666;}
+.sb-live{background:#d6f0e4;color:#1a7a48;}
+
+/* BUDGET BAR */
+.bbar-wrap{margin-top:10px;}
+.bbar-label{display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:4px;}
+.bbar{height:5px;border-radius:3px;background:#e5e4e0;overflow:hidden;}
+.bbar-fill{height:5px;border-radius:3px;}
+
+/* CHART SECTION */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.chart-full{margin-bottom:14px;}
+.chart-box{background:#fff;border:1px solid #e5e4e0;border-radius:12px;padding:18px;}
+.chart-title{font-size:12px;font-weight:700;color:#888;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;}
+.cw{position:relative;width:100%;}
+
+/* TABS */
+.tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.ct{padding:5px 14px;font-size:12px;cursor:pointer;border:1px solid #d0cfc8;border-radius:8px;background:#fff;color:#666;transition:all .15s;}
+.ct:hover{background:#f0efe8;}
+.ct.on{background:#1a1a18;color:#fff;border-color:#1a1a18;font-weight:600;}
+.ct.on-t{background:#1b4f9c;color:#fff;border-color:#1b4f9c;font-weight:600;}
+.ct.on-s{background:#c25d1a;color:#fff;border-color:#c25d1a;font-weight:600;}
+.ct.on-w{background:#1a7a48;color:#fff;border-color:#1a7a48;font-weight:600;}
+.tp{display:none;}.tp.on{display:block;}
+
+/* CREATIVE RANKING */
+.rank-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:10px;}
+.rc{background:#fff;border:1px solid #e5e4e0;border-radius:10px;padding:13px;}
+.rc.rg{border-color:#27a05a;background:#f0faf4;}
+.rc.rr{border-color:#a32d2d;background:#fdf0f0;}
+.rc.ry{border-color:#d4900a;background:#fffbf0;}
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;margin-bottom:7px;letter-spacing:.04em;}
+.bg{background:#d6f0e4;color:#1a7a48;}
+.br{background:#fce8e8;color:#a32d2d;}
+.by{background:#fff0d0;color:#a36500;}
+.bc{background:#dce8f8;color:#1b4f9c;}
+.rn{font-size:12px;font-weight:700;line-height:1.4;word-break:keep-all;margin-bottom:8px;color:#1a1a18;}
+.rrow{display:flex;justify-content:space-between;padding:4px 0;border-top:1px solid rgba(0,0,0,.05);font-size:11px;}
+.rl{color:#888;}
+.rv{font-weight:600;color:#1a1a18;}
+.rv.g{color:#1a7a48;}
+.rv.r{color:#a32d2d;}
+.rv.o{color:#c25d1a;}
+.sbar{height:3px;border-radius:2px;margin-top:8px;background:#e5e4e0;overflow:hidden;}
+.sf{height:3px;border-radius:2px;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid #e5e4e0;}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:12px;}
+thead tr{background:#f5f4f0;}
+th{padding:10px 12px;text-align:right;font-weight:600;color:#666;white-space:nowrap;border-bottom:1px solid #e5e4e0;font-size:11px;letter-spacing:.03em;}
+th:first-child{text-align:left;}
+td{padding:9px 12px;text-align:right;border-bottom:1px solid #f0efe8;white-space:nowrap;}
+td:first-child{text-align:left;font-weight:600;}
+tr:last-child td{border-bottom:none;}
+tr.total-row td{background:#f5f4f0;font-weight:700;border-top:2px solid #e0dfd8;}
+tr:hover td{background:#fafaf8;}
+.td-roas-hi{color:#1a7a48;font-weight:700;}
+.td-roas-lo{color:#a32d2d;}
+.td-hi{background:#f0faf4 !important;}
+
+/* INSIGHT BOX */
+.insight-box{background:#fff;border:1px solid #e5e4e0;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#555;line-height:1.75;}
+.insight-box strong{color:#1a1a18;}
+
+/* SUMMARY DARK BOX */
+.summary-box{background:#1a1a18;color:#fff;border-radius:12px;padding:18px 20px;margin-bottom:16px;}
+.summary-box .s-title{font-size:11px;font-weight:700;color:#aaa;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.summary-box .s-text{font-size:13px;line-height:1.8;color:#e8e7e2;}
+.summary-box .s-text strong{color:#f0c040;}
+
+@media(max-width:720px){
+  .kpi-grid{grid-template-columns:repeat(3,1fr);}
+  .kpi-grid-4{grid-template-columns:repeat(2,1fr);}
+  .camp-grid{grid-template-columns:1fr;}
+  .chart-row{grid-template-columns:1fr;}
+  .hdr{flex-direction:column;gap:10px;}
+  .hdr-r{text-align:left;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="sub">삼성출판사 · 마이리틀타이거 6월 캠페인 Daily Report</div>
+    <div class="title">마이리틀타이거 미디어 리포트</div>
+    <div class="brand-pills">
+      <span class="pill pill-done">타이거5일장 ✓종료</span>
+      <span class="pill pill-s">품절대란 토이쇼</span>
+      <span class="pill pill-w">워미스 버니 론칭</span>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="date">기준일 6/11 · 집행 6/1~6/14</div>
+    <div class="meta">매체 META (Instagram/Facebook) · 총 예산 ₩1,700,000</div>
+    <div class="meta" style="margin-top:2px;">3개 캠페인 · ASC (Advantage+ Shopping Campaign)</div>
+  </div>
+</div>
+
+<!-- ALERT / INSIGHT -->
+<div class="alert">
+  <div class="alert-title">⚑ 캠페인 주요 인사이트 · 운영 중 캠페인 기준 (6/11)</div>
+
+  <div class="alert-item">
+    <strong>[토이쇼] 최우수 효율 소재 —</strong> <em>리스탁_01</em> CTR 10.32% · ROAS 2,300% · CPA 2,411원 / <em>리스탁_02</em> CTR 11.70% · ROAS 2,070% · 전환 50건(캠페인 내 59%). CTR·전환 모두 1~2위 독점. <strong>두 소재 예산 집중 유지 권고.</strong>
+    <span class="tag-ok">증액 권고</span>
+  </div>
+
+  <div class="alert-item">
+    <strong>[버니론칭] 최우수 전환 소재 —</strong> <em>허그케어_01</em> 전환 9건(캠페인 내 26%) / <em>새친구등장_01</em> ROAS 1,150% · CPA 4,031원 / <em>뉴페이스_02</em> 전환 8건. CTR 1위는 <em>허그케어_02</em> 4.52%이나 ROAS 220%로 전환 효율 저조. 전환·ROAS 기준 <strong>허그케어_01 · 새친구등장_01 중심 운영 권고.</strong>
+    <span class="tag-ok">집중 운영</span>
+  </div>
+
+  <div class="alert-item">
+    <strong>[버니론칭] OFF 검토 소재 2개 —</strong>
+    <em>뉴페이스_01</em>: 광고비 34,547원 소진, 전환 2건, <strong>ROAS 170% (전환가치 < 광고비 2배 미만)</strong>, CPA 17,274원. /
+    <em>허그케어_02</em>: 광고비 31,526원, 전환 2건, ROAS 220%, CPA 15,763원. 두 소재 합산 66,073원 소진 대비 전환가치 하회 — 절감 예산 고효율 소재 재배분 권고.
+    <span class="tag-off">OFF 검토</span>
+  </div>
+
+  <div class="alert-item">
+    <strong>[버니론칭] 절반 경과 전환=0 소재 없음 / 연속 전환=0 소재 없음 —</strong> 모든 소재에서 4일 운영 기간 중 최소 1건 이상 전환 발생 확인. 단, <em>새친구등장_02</em>는 06/08~09 연속 2일 전환 0 이후 회복 (06/10 1건). 추이 모니터링 지속 필요.
+    <span class="tag-warn">모니터링</span>
+  </div>
+</div>
+
+<!-- SECTION 1: 전체 누적 KPI -->
+<div class="sec">
+  <div class="sec-label">1. 전체 캠페인 누적 성과 요약 (6/1~6/11)</div>
+  <div class="kpi-grid" style="margin-bottom:10px;">
+    <div class="kpi">
+      <div class="kpi-lbl">총 광고비</div>
+      <div class="kpi-val sm">₩1,275,183</div>
+      <div class="diff flat">— 예산 대비 75.0%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">총 구매 전환</div>
+      <div class="kpi-val grn">248건</div>
+      <div class="kpi-prev">구매전환값 ₩14,258,210</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">누적 ROAS</div>
+      <div class="kpi-val grn">1,118%</div>
+      <div class="kpi-prev">전환값/광고비</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">평균 CPA</div>
+      <div class="kpi-val sm">₩5,142</div>
+      <div class="kpi-prev">구매 1건당 비용</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">총 노출</div>
+      <div class="kpi-val sm">105,321</div>
+      <div class="kpi-prev">Imp 달성률 80.9%</div>
+    </div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-lbl">총 클릭</div>
+      <div class="kpi-val sm">5,240</div>
+      <div class="kpi-prev">Click 달성률 128.7%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">전체 CTR</div>
+      <div class="kpi-val sm">4.98%</div>
+      <div class="kpi-prev">Exp. CTR 3.13%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">평균 CPM</div>
+      <div class="kpi-val sm">₩12,108</div>
+      <div class="kpi-prev">Exp. CPM ₩13,064</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">평균 CPC</div>
+      <div class="kpi-val sm">₩243</div>
+      <div class="kpi-prev">Exp. CPC ₩418</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">회원가입 / 장바구니</div>
+      <div class="kpi-val sm" style="font-size:14px;">10건 / 518건</div>
+      <div class="kpi-prev">GA 전환 데이터</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: 당일 성과 -->
+<div class="sec">
+  <div class="sec-label">2. 당일 성과 (6/11) — 운영 중 캠페인</div>
+  <div class="kpi-grid-4" style="margin-bottom:10px;">
+    <div class="kpi">
+      <div class="kpi-lbl">당일 광고비</div>
+      <div class="kpi-val sm">₩173,954</div>
+      <div class="diff up">↗ +48.4% vs 전일</div>
+      <div class="kpi-prev">전일(6/10) ₩117,200</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">당일 구매 전환</div>
+      <div class="kpi-val grn">36건</div>
+      <div class="diff up">↗ +38.5% vs 전일</div>
+      <div class="kpi-prev">전일(6/10) 26건</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">당일 ROAS</div>
+      <div class="kpi-val sm">865%</div>
+      <div class="diff dn">↘ -47.6% vs 전일</div>
+      <div class="kpi-prev">전일(6/10) 1,651%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">당일 CPA</div>
+      <div class="kpi-val sm">₩4,832</div>
+      <div class="diff up">↗ 개선 vs 전일</div>
+      <div class="kpi-prev">전일(6/10) ₩4,508</div>
+    </div>
+  </div>
+  <div class="kpi-grid-4">
+    <div class="kpi">
+      <div class="kpi-lbl">당일 노출</div>
+      <div class="kpi-val sm">15,556</div>
+      <div class="diff up">↗ +20.1% (버니) / +87.4% (토이쇼)</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">당일 클릭</div>
+      <div class="kpi-val sm">1,038</div>
+      <div class="diff up">↗ 토이쇼 클릭 급증</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">당일 CTR</div>
+      <div class="kpi-val sm">6.67%</div>
+      <div class="kpi-prev">토이쇼 10.54% / 버니 3.50%</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">당일 전환값</div>
+      <div class="kpi-val sm" style="font-size:14px;">₩1,504,070</div>
+      <div class="kpi-prev">토이쇼 ₩1,295,270 / 버니 ₩208,800</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: 캠페인별 성과 카드 -->
+<div class="sec">
+  <div class="sec-label">3. 캠페인별 성과 현황</div>
+  <div class="camp-grid">
+
+    <!-- 타이거 5일장 -->
+    <div class="bcard bcard-done">
+      <span class="status-badge sb-done">✓ 종료</span>
+      <div class="bcard-name done">[기획전] 타이거 5일장</div>
+      <div class="bcard-period">6/1(월) ~ 6/7(일) · 7일 · META IG/FB</div>
+      <div class="brow"><span class="bl">예산</span><span class="bv">₩700,000</span></div>
+      <div class="brow"><span class="bl">광고비</span><span class="bv">₩699,631</span></div>
+      <div class="brow"><span class="bl">예산 소진율</span><span class="bv g">99.9%</span></div>
+      <div class="brow"><span class="bl">노출 / 달성률</span><span class="bv">54,674 / <span class="bv g">109.3%</span></span></div>
+      <div class="brow"><span class="bl">클릭 / 달성률</span><span class="bv">2,071 / <span class="bv r">82.8%</span></span></div>
+      <div class="brow"><span class="bl">CTR</span><span class="bv">3.79%</span></div>
+      <div class="brow"><span class="bl">CPM</span><span class="bv">₩12,796</span></div>
+      <div class="brow"><span class="bl">CPC</span><span class="bv">₩338</span></div>
+      <div class="brow"><span class="bl">구매 전환</span><span class="bv g">128건</span></div>
+      <div class="brow"><span class="bl">구매 전환값</span><span class="bv">₩6,922,660</span></div>
+      <div class="brow"><span class="bl">ROAS</span><span class="bv g">989%</span></div>
+      <div class="brow"><span class="bl">CPA</span><span class="bv">₩5,466</span></div>
+      <div class="brow"><span class="bl">회원가입</span><span class="bv">3건</span></div>
+      <div class="brow"><span class="bl">장바구니</span><span class="bv">110건</span></div>
+      <div class="bbar-wrap">
+        <div class="bbar-label"><span>예산 소진</span><span>99.9%</span></div>
+        <div class="bbar"><div class="bbar-fill" style="width:99.9%;background:#bbb;"></div></div>
+      </div>
+    </div>
+
+    <!-- 품절대란 토이쇼 -->
+    <div class="bcard bcard-s">
+      <span class="status-badge sb-live">● 운영중</span>
+      <div class="bcard-name s">[기획전] 품절대란 토이쇼</div>
+      <div class="bcard-period">6/8(월) ~ 6/14(일) · 7일 · 4일 경과 · META IG/FB</div>
+      <div class="brow"><span class="bl">예산</span><span class="bv">₩500,000</span></div>
+      <div class="brow"><span class="bl">광고비</span><span class="bv">₩287,134</span></div>
+      <div class="brow"><span class="bl">예산 소진율</span><span class="bv o">57.4%</span></div>
+      <div class="brow"><span class="bl">노출 / 달성률</span><span class="bv">21,556 / <span class="bv r">56.0%</span></span></div>
+      <div class="brow"><span class="bl">클릭 / 달성률</span><span class="bv">2,126 / <span class="bv g">184.3%</span></span></div>
+      <div class="brow"><span class="bl">CTR</span><span class="bv g">9.86%</span></div>
+      <div class="brow"><span class="bl">CPM</span><span class="bv">₩13,320</span></div>
+      <div class="brow"><span class="bl">CPC</span><span class="bv">₩135</span></div>
+      <div class="brow"><span class="bl">구매 전환</span><span class="bv g">85건</span></div>
+      <div class="brow"><span class="bl">구매 전환값</span><span class="bv">₩5,703,670</span></div>
+      <div class="brow"><span class="bl">ROAS</span><span class="bv g">1,986%</span></div>
+      <div class="brow"><span class="bl">CPA</span><span class="bv g">₩3,378</span></div>
+      <div class="brow"><span class="bl">회원가입</span><span class="bv">4건</span></div>
+      <div class="brow"><span class="bl">장바구니</span><span class="bv">391건</span></div>
+      <div class="brow"><span class="bl">Exp. CTR</span><span class="bv">3.00% → 실 9.86%</span></div>
+      <div class="bbar-wrap">
+        <div class="bbar-label"><span>예산 소진 (잔여 ₩212,866)</span><span>57.4%</span></div>
+        <div class="bbar"><div class="bbar-fill" style="width:57.4%;background:#c25d1a;"></div></div>
+      </div>
+    </div>
+
+    <!-- 워미스 버니 론칭 -->
+    <div class="bcard bcard-w">
+      <span class="status-badge sb-live">● 운영중</span>
+      <div class="bcard-name w">[기획전] 워미스 버니 론칭</div>
+      <div class="bcard-period">6/8(월) ~ 6/14(일) · 7일 · 4일 경과 · META IG/FB</div>
+      <div class="brow"><span class="bl">예산</span><span class="bv">₩500,000</span></div>
+      <div class="brow"><span class="bl">광고비</span><span class="bv">₩288,417</span></div>
+      <div class="brow"><span class="bl">예산 소진율</span><span class="bv o">57.7%</span></div>
+      <div class="brow"><span class="bl">노출 / 달성률</span><span class="bv">29,091 / <span class="bv o">69.8%</span></span></div>
+      <div class="brow"><span class="bl">클릭 / 달성률</span><span class="bv">1,043 / <span class="bv g">250.3%</span></span></div>
+      <div class="brow"><span class="bl">CTR</span><span class="bv">3.59%</span></div>
+      <div class="brow"><span class="bl">CPM</span><span class="bv">₩9,914</span></div>
+      <div class="brow"><span class="bl">CPC</span><span class="bv">₩277</span></div>
+      <div class="brow"><span class="bl">구매 전환</span><span class="bv">35건</span></div>
+      <div class="brow"><span class="bl">구매 전환값</span><span class="bv">₩1,631,880</span></div>
+      <div class="brow"><span class="bl">ROAS</span><span class="bv o">566%</span></div>
+      <div class="brow"><span class="bl">CPA</span><span class="bv">₩8,240</span></div>
+      <div class="brow"><span class="bl">회원가입</span><span class="bv">3건</span></div>
+      <div class="brow"><span class="bl">장바구니</span><span class="bv">17건</span></div>
+      <div class="brow"><span class="bl">Exp. CTR</span><span class="bv">1.00% → 실 3.59%</span></div>
+      <div class="bbar-wrap">
+        <div class="bbar-label"><span>예산 소진 (잔여 ₩211,583)</span><span>57.7%</span></div>
+        <div class="bbar"><div class="bbar-fill" style="width:57.7%;background:#1a7a48;"></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 4: 차트 -->
+<div class="sec">
+  <div class="sec-label">4. 일별 성과 트렌드</div>
+
+  <!-- 일별 광고비 + 전환 -->
+  <div class="chart-full">
+    <div class="chart-box">
+      <div class="chart-title">일별 광고비 & 구매 전환 추이 (6/1~6/11)</div>
+      <div class="cw" style="height:220px;"><canvas id="chartDaily"></canvas></div>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <!-- ROAS 추이 -->
+    <div class="chart-box">
+      <div class="chart-title">캠페인별 일별 ROAS</div>
+      <div class="cw" style="height:200px;"><canvas id="chartRoas"></canvas></div>
+    </div>
+    <!-- CTR 추이 -->
+    <div class="chart-box">
+      <div class="chart-title">캠페인별 일별 CTR (%)</div>
+      <div class="cw" style="height:200px;"><canvas id="chartCtr"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5: 소재별 분석 -->
+<div class="sec">
+  <div class="sec-label">5. 소재 효율 분석 — 운영 중 캠페인 (6/8~6/11 누적)</div>
+
+  <div class="tab-row">
+    <button class="ct on-s on" onclick="swCamp(this,'s')">품절대란 토이쇼</button>
+    <button class="ct" onclick="swCamp(this,'w')">워미스 버니 론칭</button>
+  </div>
+
+  <!-- 토이쇼 -->
+  <div id="camp-s" class="tp on">
+    <div class="insight-box">
+      <strong>[품절대란 토이쇼]</strong> — <strong>리스탁_01·02</strong>가 CTR(10.32%, 11.70%) 및 전환(13건, 50건) 동시 석권. 캠페인 전환의 74%(63건)를 두 소재가 집중 견인. 반면 <strong>레일블록_01</strong>은 전환 2건 · CPA 7,019원으로 효율 평균 하회. OFF 권고 소재 없음 — 모든 소재에서 전환 발생 확인.
+    </div>
+    <div class="tab-row" id="tab-s">
+      <button class="ct on-s on" onclick="swRank('s',this,0)">전환 랭킹</button>
+      <button class="ct" onclick="swRank('s',this,1)">CTR 랭킹</button>
+      <button class="ct" onclick="swRank('s',this,2)">일별 상세</button>
+    </div>
+    <!-- 전환 랭킹 -->
+    <div id="s-r0" class="tp on">
+      <div class="rank-grid">
+        <div class="rc rg"><span class="badge bg">전환 #1</span><div class="rn">리스탁_02</div><div class="rrow"><span class="rl">전환</span><span class="rv g">50건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv g">2,070%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩3,798</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">11.70%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩189,886</span></div><div class="sbar"><div class="sf" style="width:100%;background:#c25d1a;"></div></div></div>
+        <div class="rc rg"><span class="badge bg">전환 #2</span><div class="rn">리스탁_01</div><div class="rrow"><span class="rl">전환</span><span class="rv g">13건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv g">2,300%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩2,411</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">10.32%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩31,344</span></div><div class="sbar"><div class="sf" style="width:26%;background:#c25d1a;"></div></div></div>
+        <div class="rc rg"><span class="badge bg">전환 #3</span><div class="rn">토이쇼_02</div><div class="rrow"><span class="rl">전환</span><span class="rv g">8건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv g">1,620%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩2,359</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">7.54%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩18,874</span></div><div class="sbar"><div class="sf" style="width:16%;background:#c25d1a;"></div></div></div>
+        <div class="rc"><span class="badge bc">전환 #4</span><div class="rn">레일블록_02</div><div class="rrow"><span class="rl">전환</span><span class="rv">5건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv g">2,210%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩2,210</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.63%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩11,049</span></div><div class="sbar"><div class="sf" style="width:10%;background:#c25d1a;"></div></div></div>
+        <div class="rc"><span class="badge bc">전환 #5</span><div class="rn">버니런칭_02</div><div class="rrow"><span class="rl">전환</span><span class="rv">4건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv g">1,290%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩2,650</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">2.73%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩10,601</span></div><div class="sbar"><div class="sf" style="width:8%;background:#c25d1a;"></div></div></div>
+        <div class="rc"><span class="badge bc">전환 #6</span><div class="rn">레일블록_01</div><div class="rrow"><span class="rl">전환</span><span class="rv">2건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv g">700%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩7,019</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.01%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩14,037</span></div><div class="sbar"><div class="sf" style="width:4%;background:#c25d1a;"></div></div></div>
+        <div class="rc"><span class="badge bc">전환 #7</span><div class="rn">버니런칭_01</div><div class="rrow"><span class="rl">전환</span><span class="rv">2건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv g">4,120%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩2,741</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.33%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩5,483</span></div><div class="sbar"><div class="sf" style="width:4%;background:#c25d1a;"></div></div></div>
+        <div class="rc"><span class="badge bc">전환 #8</span><div class="rn">토이쇼_01</div><div class="rrow"><span class="rl">전환</span><span class="rv">1건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv">590%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩5,860</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">4.51%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩5,860</span></div><div class="sbar"><div class="sf" style="width:2%;background:#c25d1a;"></div></div></div>
+      </div>
+    </div>
+    <!-- CTR 랭킹 -->
+    <div id="s-r1" class="tp">
+      <div class="rank-grid">
+        <div class="rc rg"><span class="badge bg">CTR #1</span><div class="rn">리스탁_02</div><div class="rrow"><span class="rl">CTR</span><span class="rv g">11.70%</span></div><div class="rrow"><span class="rl">클릭</span><span class="rv">1,635회</span></div><div class="rrow"><span class="rl">전환</span><span class="rv g">50건 ✓</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩189,886</span></div><div class="sbar"><div class="sf" style="width:100%;background:#c25d1a;"></div></div></div>
+        <div class="rc rg"><span class="badge bg">CTR #2</span><div class="rn">리스탁_01</div><div class="rrow"><span class="rl">CTR</span><span class="rv g">10.32%</span></div><div class="rrow"><span class="rl">클릭</span><span class="rv">254회</span></div><div class="rrow"><span class="rl">전환</span><span class="rv g">13건 ✓</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩31,344</span></div><div class="sbar"><div class="sf" style="width:88%;background:#c25d1a;"></div></div></div>
+        <div class="rc"><span class="badge bc">CTR #3</span><div class="rn">토이쇼_02</div><div class="rrow"><span class="rl">CTR</span><span class="rv">7.54%</span></div><div class="rrow"><span class="rl">클릭</span><span class="rv">121회</span></div><div class="rrow"><span class="rl">전환</span><span class="rv">8건 ✓</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩18,874</span></div><div class="sbar"><div class="sf" style="width:64%;background:#c25d1a;"></div></div></div>
+        <div class="rc"><span class="badge bc">CTR #4</span><div class="rn">토이쇼_01</div><div class="rrow"><span class="rl">CTR</span><span class="rv">4.51%</span></div><div class="rrow"><span class="rl">클릭</span><span class="rv">17회</span></div><div class="rrow"><span class="rl">전환</span><span class="rv">1건</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩5,860</span></div><div class="sbar"><div class="sf" style="width:39%;background:#c25d1a;"></div></div></div>
+        <div class="rc"><span class="badge bc">CTR #5</span><div class="rn">레일블록_02</div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.63%</span></div><div class="rrow"><span class="rl">클릭</span><span class="rv">31회</span></div><div class="rrow"><span class="rl">전환</span><span class="rv">5건</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩11,049</span></div><div class="sbar"><div class="sf" style="width:31%;background:#c25d1a;"></div></div></div>
+      </div>
+    </div>
+    <!-- 일별 상세 -->
+    <div id="s-r2" class="tp">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>소재</th><th>06/08</th><th>06/09</th><th>06/10</th><th>06/11</th><th>누적 전환</th><th>누적 광고비</th><th>ROAS</th><th>CPA</th></tr></thead>
+          <tbody>
+            <tr><td>리스탁_02</td><td>13건</td><td>13건</td><td>5건</td><td>19건</td><td class="td-roas-hi">50건</td><td>₩189,886</td><td class="td-roas-hi">2,070%</td><td>₩3,798</td></tr>
+            <tr><td>리스탁_01</td><td>2건</td><td>4건</td><td>5건</td><td>2건</td><td class="td-roas-hi">13건</td><td>₩31,344</td><td class="td-roas-hi">2,300%</td><td>₩2,411</td></tr>
+            <tr><td>토이쇼_02</td><td>0건</td><td>2건</td><td>5건</td><td>1건</td><td>8건</td><td>₩18,874</td><td class="td-roas-hi">1,620%</td><td>₩2,359</td></tr>
+            <tr><td>레일블록_02</td><td>2건</td><td>0건</td><td>0건</td><td>3건</td><td>5건</td><td>₩11,049</td><td class="td-roas-hi">2,210%</td><td>₩2,210</td></tr>
+            <tr><td>버니런칭_02</td><td>0건</td><td>0건</td><td>2건</td><td>2건</td><td>4건</td><td>₩10,601</td><td class="td-roas-hi">1,290%</td><td>₩2,650</td></tr>
+            <tr><td>레일블록_01</td><td>0건</td><td>0건</td><td>1건</td><td>1건</td><td>2건</td><td>₩14,037</td><td>700%</td><td>₩7,019</td></tr>
+            <tr><td>버니런칭_01</td><td>0건</td><td>1건</td><td>0건</td><td>1건</td><td>2건</td><td>₩5,483</td><td class="td-roas-hi">4,120%</td><td>₩2,741</td></tr>
+            <tr><td>토이쇼_01</td><td>0건</td><td>0건</td><td>1건</td><td>0건</td><td>1건</td><td>₩5,860</td><td>590%</td><td>₩5,860</td></tr>
+            <tr class="total-row"><td>합계</td><td>17건</td><td>20건</td><td>19건</td><td>29건</td><td>85건</td><td>₩287,134</td><td class="td-roas-hi">1,986%</td><td>₩3,378</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 버니론칭 -->
+  <div id="camp-w" class="tp">
+    <div class="insight-box">
+      <strong>[워미스 버니 론칭]</strong> — <strong>허그케어_01</strong> 전환 9건(26%) · <strong>뉴페이스_02</strong> 8건 · <strong>새친구등장_01</strong> 7건 순으로 전환 집중. CTR 1위는 <strong>허그케어_02(4.52%)</strong>이나 ROAS 220%로 효율 저조 — CTR과 전환 효율의 괴리 존재. <strong>OFF 검토 소재: 뉴페이스_01(ROAS 170%), 허그케어_02(ROAS 220%)</strong> — 두 소재 합산 광고비 66,073원.
+    </div>
+    <div class="tab-row" id="tab-w">
+      <button class="ct on-w on" onclick="swRank('w',this,0)">전환 랭킹</button>
+      <button class="ct" onclick="swRank('w',this,1)">CTR 랭킹</button>
+      <button class="ct" onclick="swRank('w',this,2)">OFF 검토</button>
+      <button class="ct" onclick="swRank('w',this,3)">일별 상세</button>
+    </div>
+    <!-- 전환 랭킹 -->
+    <div id="w-r0" class="tp on">
+      <div class="rank-grid">
+        <div class="rc rg"><span class="badge bg">전환 #1</span><div class="rn">허그케어_01</div><div class="rrow"><span class="rl">전환</span><span class="rv g">9건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv">460%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩13,150</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.74%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩118,353</span></div><div class="sbar"><div class="sf" style="width:100%;background:#1a7a48;"></div></div></div>
+        <div class="rc rg"><span class="badge bg">전환 #2</span><div class="rn">뉴페이스_02</div><div class="rrow"><span class="rl">전환</span><span class="rv g">8건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv">570%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩4,509</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.43%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩36,073</span></div><div class="sbar"><div class="sf" style="width:89%;background:#1a7a48;"></div></div></div>
+        <div class="rc rg"><span class="badge bg">전환 #3</span><div class="rn">새친구등장_01</div><div class="rrow"><span class="rl">전환</span><span class="rv g">7건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv g">1,150%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩4,031</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.87%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩28,217</span></div><div class="sbar"><div class="sf" style="width:78%;background:#1a7a48;"></div></div></div>
+        <div class="rc"><span class="badge bc">전환 #4</span><div class="rn">냉감인형_01</div><div class="rrow"><span class="rl">전환</span><span class="rv">4건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv g">2,110%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩4,143</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">1.58%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩16,570</span></div><div class="sbar"><div class="sf" style="width:44%;background:#1a7a48;"></div></div></div>
+        <div class="rc"><span class="badge bc">전환 #5</span><div class="rn">냉감인형_02</div><div class="rrow"><span class="rl">전환</span><span class="rv">2건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv">310%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩7,316</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.63%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩14,631</span></div><div class="sbar"><div class="sf" style="width:22%;background:#1a7a48;"></div></div></div>
+        <div class="rc"><span class="badge bc">전환 #6</span><div class="rn">뉴페이스_01</div><div class="rrow"><span class="rl">전환</span><span class="rv">2건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv r">170% ⚠</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv r">₩17,274</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.65%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv r">₩34,547</span></div><div class="sbar"><div class="sf" style="width:22%;background:#a32d2d;"></div></div></div>
+        <div class="rc"><span class="badge bc">전환 #7</span><div class="rn">허그케어_02</div><div class="rrow"><span class="rl">전환</span><span class="rv">2건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv r">220% ⚠</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv r">₩15,763</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">4.52%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv r">₩31,526</span></div><div class="sbar"><div class="sf" style="width:22%;background:#a32d2d;"></div></div></div>
+        <div class="rc"><span class="badge bc">전환 #8</span><div class="rn">새친구등장_02</div><div class="rrow"><span class="rl">전환</span><span class="rv">1건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv">410%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv">₩8,500</span></div><div class="rrow"><span class="rl">CTR</span><span class="rv">2.11%</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩8,500</span></div><div class="sbar"><div class="sf" style="width:11%;background:#1a7a48;"></div></div></div>
+      </div>
+    </div>
+    <!-- CTR 랭킹 -->
+    <div id="w-r1" class="tp">
+      <div class="rank-grid">
+        <div class="rc"><span class="badge by">CTR #1</span><div class="rn">허그케어_02</div><div class="rrow"><span class="rl">CTR</span><span class="rv g">4.52%</span></div><div class="rrow"><span class="rl">클릭</span><span class="rv">108회</span></div><div class="rrow"><span class="rl">전환</span><span class="rv r">2건 · ROAS 220% ⚠</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩31,526</span></div><div class="sbar"><div class="sf" style="width:100%;background:#d4900a;"></div></div></div>
+        <div class="rc"><span class="badge bc">CTR #2</span><div class="rn">새친구등장_01</div><div class="rrow"><span class="rl">CTR</span><span class="rv g">3.87%</span></div><div class="rrow"><span class="rl">클릭</span><span class="rv">96회</span></div><div class="rrow"><span class="rl">전환</span><span class="rv g">7건 · ROAS 1,150% ✓</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩28,217</span></div><div class="sbar"><div class="sf" style="width:86%;background:#1a7a48;"></div></div></div>
+        <div class="rc"><span class="badge bc">CTR #3</span><div class="rn">허그케어_01</div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.74%</span></div><div class="rrow"><span class="rl">클릭</span><span class="rv">506회</span></div><div class="rrow"><span class="rl">전환</span><span class="rv g">9건 ✓</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩118,353</span></div><div class="sbar"><div class="sf" style="width:83%;background:#1a7a48;"></div></div></div>
+        <div class="rc"><span class="badge bc">CTR #4</span><div class="rn">뉴페이스_01</div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.65%</span></div><div class="rrow"><span class="rl">클릭</span><span class="rv">138회</span></div><div class="rrow"><span class="rl">전환</span><span class="rv r">2건 · ROAS 170% ⚠</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩34,547</span></div><div class="sbar"><div class="sf" style="width:81%;background:#a32d2d;"></div></div></div>
+        <div class="rc"><span class="badge bc">CTR #5</span><div class="rn">냉감인형_02</div><div class="rrow"><span class="rl">CTR</span><span class="rv">3.63%</span></div><div class="rrow"><span class="rl">클릭</span><span class="rv">47회</span></div><div class="rrow"><span class="rl">전환</span><span class="rv">2건</span></div><div class="rrow"><span class="rl">광고비</span><span class="rv">₩14,631</span></div><div class="sbar"><div class="sf" style="width:80%;background:#888;"></div></div></div>
+      </div>
+    </div>
+    <!-- OFF 검토 -->
+    <div id="w-r2" class="tp">
+      <div class="insight-box" style="border-color:#f0c040;background:#fffbf0;">
+        <strong>⚠ OFF 검토 기준:</strong> 캠페인 절반(4일) 경과 시점 기준, 전환 有 but ROAS 300% 미만 + CPA 과다 소재. 해당 예산을 고효율 소재(새친구등장_01, 뉴페이스_02)로 재배분 시 전환 효율 개선 기대.
+      </div>
+      <div class="rank-grid">
+        <div class="rc rr"><span class="badge br">OFF 검토 ①</span><div class="rn">뉴페이스_01</div><div class="rrow"><span class="rl">광고비</span><span class="rv r">₩34,547</span></div><div class="rrow"><span class="rl">전환</span><span class="rv r">2건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv r">170% (손익 하회)</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv r">₩17,274</span></div><div class="rrow"><span class="rl">전환값</span><span class="rv r">₩57,600</span></div><div class="rrow"><span class="rl">비고</span><span class="rv r">전환값 < 광고비 2배</span></div></div>
+        <div class="rc rr"><span class="badge br">OFF 검토 ②</span><div class="rn">허그케어_02</div><div class="rrow"><span class="rl">광고비</span><span class="rv r">₩31,526</span></div><div class="rrow"><span class="rl">전환</span><span class="rv r">2건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv r">220%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv r">₩15,763</span></div><div class="rrow"><span class="rl">전환값</span><span class="rv r">₩68,600</span></div><div class="rrow"><span class="rl">비고</span><span class="rv r">CTR 4.52%이나 전환 미전환</span></div></div>
+        <div class="rc rg"><span class="badge bg">재배분 권고 →</span><div class="rn">새친구등장_01</div><div class="rrow"><span class="rl">현재 광고비</span><span class="rv">₩28,217</span></div><div class="rrow"><span class="rl">전환</span><span class="rv g">7건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv g">1,150%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv g">₩4,031</span></div><div class="rrow"><span class="rl">비고</span><span class="rv g">예산 증액 시 전환 확대 기대</span></div></div>
+        <div class="rc rg"><span class="badge bg">재배분 권고 →</span><div class="rn">뉴페이스_02</div><div class="rrow"><span class="rl">현재 광고비</span><span class="rv">₩36,073</span></div><div class="rrow"><span class="rl">전환</span><span class="rv g">8건</span></div><div class="rrow"><span class="rl">ROAS</span><span class="rv">570%</span></div><div class="rrow"><span class="rl">CPA</span><span class="rv g">₩4,509</span></div><div class="rrow"><span class="rl">비고</span><span class="rv g">대비 소재 최고 전환 2위</span></div></div>
+      </div>
+    </div>
+    <!-- 일별 상세 -->
+    <div id="w-r3" class="tp">
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>소재</th><th>06/08</th><th>06/09</th><th>06/10</th><th>06/11</th><th>누적 전환</th><th>누적 광고비</th><th>ROAS</th><th>CPA</th></tr></thead>
+          <tbody>
+            <tr class="td-hi"><td>허그케어_01</td><td>0건</td><td>4건</td><td>2건</td><td>3건</td><td class="td-roas-hi">9건</td><td>₩118,353</td><td>460%</td><td>₩13,150</td></tr>
+            <tr><td>뉴페이스_02</td><td>5건</td><td>2건</td><td>1건</td><td>0건</td><td>8건</td><td>₩36,073</td><td>570%</td><td>₩4,509</td></tr>
+            <tr><td>새친구등장_01</td><td>2건</td><td>4건</td><td>1건</td><td>0건</td><td class="td-roas-hi">7건</td><td>₩28,217</td><td class="td-roas-hi">1,150%</td><td>₩4,031</td></tr>
+            <tr><td>냉감인형_01</td><td>1건</td><td>1건</td><td>1건</td><td>1건</td><td>4건</td><td>₩16,570</td><td class="td-roas-hi">2,110%</td><td>₩4,143</td></tr>
+            <tr><td>냉감인형_02</td><td>0건</td><td>0건</td><td>0건</td><td>2건</td><td>2건</td><td>₩14,631</td><td>310%</td><td>₩7,316</td></tr>
+            <tr style="background:#fdf0f0;"><td>뉴페이스_01 ⚠</td><td>0건</td><td>1건</td><td>1건</td><td>0건</td><td class="td-roas-lo">2건</td><td class="td-roas-lo">₩34,547</td><td class="td-roas-lo">170%</td><td class="td-roas-lo">₩17,274</td></tr>
+            <tr style="background:#fdf0f0;"><td>허그케어_02 ⚠</td><td>1건</td><td>0건</td><td>0건</td><td>1건</td><td class="td-roas-lo">2건</td><td class="td-roas-lo">₩31,526</td><td class="td-roas-lo">220%</td><td class="td-roas-lo">₩15,763</td></tr>
+            <tr><td>새친구등장_02</td><td>0건</td><td>0건</td><td>1건</td><td>0건</td><td>1건</td><td>₩8,500</td><td>410%</td><td>₩8,500</td></tr>
+            <tr class="total-row"><td>합계</td><td>9건</td><td>12건</td><td>7건</td><td>7건</td><td>35건</td><td>₩288,417</td><td>566%</td><td>₩8,240</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6: 종료 캠페인 타이거 5일장 소재 전체 테이블 -->
+<div class="sec">
+  <div class="sec-label">6. [참고] 타이거 5일장 소재 성과 전체 (종료 캠페인 · 6/1~6/7)</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>소재</th><th>노출</th><th>클릭</th><th>CTR</th><th>광고비</th><th>전환</th><th>전환값</th><th>ROAS</th><th>CPA</th></tr></thead>
+      <tbody>
+        <tr class="td-hi"><td>여름필수템_02</td><td>41,843</td><td>1,665</td><td>3.98%</td><td>₩537,990</td><td class="td-roas-hi">96건</td><td>₩4,975,600</td><td class="td-roas-hi">920%</td><td>₩5,604</td></tr>
+        <tr><td>장바구니_01</td><td>5,790</td><td>194</td><td>3.35%</td><td>₩67,331</td><td>17건</td><td>₩916,000</td><td class="td-roas-hi">1,360%</td><td>₩3,961</td></tr>
+        <tr><td>장바구니_02</td><td>2,650</td><td>91</td><td>3.43%</td><td>₩34,224</td><td>5건</td><td>₩511,490</td><td class="td-roas-hi">1,490%</td><td>₩6,845</td></tr>
+        <tr><td>여름필수템_01</td><td>1,180</td><td>33</td><td>2.80%</td><td>₩16,461</td><td>5건</td><td>₩302,070</td><td class="td-roas-hi">1,840%</td><td>₩3,292</td></tr>
+        <tr><td>슬라이드형_큐레이션</td><td>959</td><td>14</td><td>1.46%</td><td>₩13,370</td><td>3건</td><td>₩121,700</td><td>910%</td><td>₩4,457</td></tr>
+        <tr><td>라인업_01</td><td>1,438</td><td>45</td><td>3.13%</td><td>₩20,400</td><td>2건</td><td>₩95,800</td><td>470%</td><td>₩10,200</td></tr>
+        <tr><td>라인업_02</td><td>814</td><td>29</td><td>3.56%</td><td>₩9,854</td><td class="td-roas-lo">0건</td><td>₩0</td><td class="td-roas-lo">0%</td><td>—</td></tr>
+        <tr class="total-row"><td>합계</td><td>54,674</td><td>2,071</td><td>3.79%</td><td>₩699,631</td><td>128건</td><td>₩6,922,660</td><td class="td-roas-hi">989%</td><td>₩5,466</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// ======================================
+// DATA
+// ======================================
+const allDates = ['06/01','06/02','06/03','06/04','06/05','06/06','06/07','06/08','06/09','06/10','06/11'];
+
+// 일별 광고비 (타이거5일장 종료 후 0)
+const spendTiger  = [82450,85897,96516,99324,120973,99809,114663,0,0,0,0];
+const spendToi    = [0,0,0,0,0,0,0,72683,69154,50454,94843];
+const spendBunny  = [0,0,0,0,0,0,0,61137,81423,66746,79111];
+
+// 일별 구매 전환
+const purchTiger  = [13,12,15,22,11,8,47,0,0,0,0];
+const purchToi    = [0,0,0,0,0,0,0,17,20,19,29];
+const purchBunny  = [0,0,0,0,0,0,0,9,12,7,7];
+
+// 일별 ROAS
+const roasTiger   = [10.23,9.05,7.98,11.18,3.30,4.06,22.83,null,null,null,null];
+const roasToi     = [null,null,null,null,null,null,null,15.30,25.18,30.81,13.66];
+const roasBunny   = [null,null,null,null,null,null,null,4.05,9.76,5.70,2.64];
+
+// 일별 CTR
+const ctrTiger    = [4.91,4.14,4.45,4.00,3.66,2.79,2.91,null,null,null,null];
+const ctrToi      = [null,null,null,null,null,null,null,11.10,10.94,5.24,10.54];
+const ctrBunny    = [null,null,null,null,null,null,null,3.75,3.71,3.42,3.50];
+
+// ======================================
+// CHART: 일별 광고비 & 전환
+// ======================================
+(function(){
+  const ctx = document.getElementById('chartDaily').getContext('2d');
+  const totalSpend = allDates.map((_,i)=>spendTiger[i]+spendToi[i]+spendBunny[i]);
+  const totalPurch = allDates.map((_,i)=>purchTiger[i]+purchToi[i]+purchBunny[i]);
+  new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:allDates,
+      datasets:[
+        {label:'타이거5일장',data:spendTiger,backgroundColor:'rgba(180,190,210,0.7)',stack:'spend',yAxisID:'y'},
+        {label:'품절대란토이쇼',data:spendToi,backgroundColor:'rgba(194,93,26,0.7)',stack:'spend',yAxisID:'y'},
+        {label:'워미스버니론칭',data:spendBunny,backgroundColor:'rgba(26,122,72,0.6)',stack:'spend',yAxisID:'y'},
+        {type:'line',label:'전체 구매 전환',data:totalPurch,borderColor:'#1a1a18',backgroundColor:'rgba(26,26,24,0.1)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#1a1a18',fill:false,yAxisID:'y2',tension:0.3}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:11},boxWidth:12,padding:14}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:11}}},
+        y:{stacked:true,title:{display:true,text:'광고비 (원)',font:{size:10}},ticks:{font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}},
+        y2:{position:'right',title:{display:true,text:'구매 전환 (건)',font:{size:10}},ticks:{font:{size:10}},grid:{drawOnChartArea:false}}
+      }
+    }
+  });
+})();
+
+// ======================================
+// CHART: 캠페인별 일별 ROAS
+// ======================================
+(function(){
+  const ctx = document.getElementById('chartRoas').getContext('2d');
+  new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:allDates,
+      datasets:[
+        {label:'타이거5일장',data:roasTiger,borderColor:'#9aaac2',backgroundColor:'rgba(154,170,194,0.08)',borderWidth:2,pointRadius:4,fill:false,tension:0.3,spanGaps:false},
+        {label:'품절대란토이쇼',data:roasToi,borderColor:'#c25d1a',backgroundColor:'rgba(194,93,26,0.08)',borderWidth:2,pointRadius:4,fill:false,tension:0.3,spanGaps:false},
+        {label:'워미스버니론칭',data:roasBunny,borderColor:'#1a7a48',backgroundColor:'rgba(26,122,72,0.08)',borderWidth:2,pointRadius:4,fill:false,tension:0.3,spanGaps:false}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:11},boxWidth:10,padding:12}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:10}}},
+        y:{title:{display:true,text:'ROAS (%)',font:{size:10}},ticks:{font:{size:10},callback:v=>(v*100).toLocaleString()+'%'}}
+      }
+    }
+  });
+})();
+
+// ======================================
+// CHART: 캠페인별 일별 CTR
+// ======================================
+(function(){
+  const ctx = document.getElementById('chartCtr').getContext('2d');
+  new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:allDates,
+      datasets:[
+        {label:'타이거5일장',data:ctrTiger,borderColor:'#9aaac2',backgroundColor:'rgba(154,170,194,0.08)',borderWidth:2,pointRadius:4,fill:false,tension:0.3,spanGaps:false},
+        {label:'품절대란토이쇼',data:ctrToi,borderColor:'#c25d1a',backgroundColor:'rgba(194,93,26,0.08)',borderWidth:2,pointRadius:4,fill:false,tension:0.3,spanGaps:false},
+        {label:'워미스버니론칭',data:ctrBunny,borderColor:'#1a7a48',backgroundColor:'rgba(26,122,72,0.08)',borderWidth:2,pointRadius:4,fill:false,tension:0.3,spanGaps:false}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{size:11},boxWidth:10,padding:12}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:10}}},
+        y:{title:{display:true,text:'CTR (%)',font:{size:10}},ticks:{font:{size:10},callback:v=>v+'%'}}
+      }
+    }
+  });
+})();
+
+// ======================================
+// TAB SWITCHING
+// ======================================
+function swCamp(btn, id){
+  // show/hide camp panels
+  document.querySelectorAll('#camp-s,#camp-w').forEach(el=>el.classList.remove('on'));
+  document.getElementById('camp-'+id).classList.add('on');
+  // update buttons
+  btn.closest('.tab-row').querySelectorAll('.ct').forEach(b=>{
+    b.classList.remove('on','on-t','on-s','on-w');
+    b.classList.add('ct');
+  });
+  const cls = id==='t'?'on-t':id==='s'?'on-s':'on-w';
+  btn.classList.add(cls,'on');
+}
+
+function swRank(camp, btn, idx){
+  const prefix = camp+'-r';
+  document.querySelectorAll('[id^="'+prefix+'"]').forEach(el=>el.classList.remove('on'));
+  document.getElementById(prefix+idx).classList.add('on');
+  const tabId = 'tab-'+camp;
+  document.getElementById(tabId).querySelectorAll('.ct').forEach(b=>{
+    b.classList.remove('on','on-t','on-s','on-w');
+  });
+  const cls = camp==='t'?'on-t':camp==='s'?'on-s':'on-w';
+  btn.classList.add(cls,'on');
+}
+</script>
+</body>
+</html>
